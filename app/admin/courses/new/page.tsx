@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Save, Loader2, FilePlus2 } from 'lucide-react';
-
+export const dynamic = 'force-dynamic'
 export default function NewCoursePage() {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
@@ -71,7 +71,7 @@ export default function NewCoursePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 py-6">
-      
+
       {/* Back button */}
       <div>
         <Link
@@ -91,7 +91,7 @@ export default function NewCoursePage() {
 
       {/* Form Container */}
       <div className="border border-slate-800 bg-slate-900/40 rounded-2xl p-6 sm:p-8">
-        
+
         {errorMsg && (
           <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
             <span className="font-bold">Error creating course</span>
