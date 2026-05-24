@@ -1,11 +1,12 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowLeft, Save, Loader2, FilePlus2 } from 'lucide-react';
-export const dynamic = 'force-dynamic'
 export default function NewCoursePage() {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');

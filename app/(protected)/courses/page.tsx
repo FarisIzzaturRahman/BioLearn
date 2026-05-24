@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { createClient } from '@/lib/supabase/server';
 import CourseCard from '@/components/CourseCard';
 import { BookOpen } from 'lucide-react';

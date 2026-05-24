@@ -1,11 +1,12 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Dna, ShieldAlert, KeyRound, Mail, User, CheckCircle2, Loader2 } from 'lucide-react';
-export const dynamic = 'force-dynamic'
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
