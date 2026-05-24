@@ -1,0 +1,205 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 15, 23, 42; /* slate-900 */
+  --background-rgb: 248, 250, 252; /* slate-50 */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Fira Code', 'Courier New', monospace;
+}
+
+.dark {
+  --foreground-rgb: 241, 245, 249; /* slate-100 */
+  --background-rgb: 15, 23, 42; /* slate-900 */
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: rgb(var(--background-rgb));
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 184, 166, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 184, 166, 0.6);
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+}
+
+.dark .glass-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Custom animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Lesson Markdown Content Styling */
+.lesson-prose {
+  line-height: 1.75;
+  color: rgb(var(--foreground-rgb));
+}
+
+.lesson-prose h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  color: #0f766e; /* teal-700 */
+}
+
+.dark .lesson-prose h1 {
+  color: #2dd4bf; /* teal-400 */
+}
+
+.lesson-prose h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 1.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(20, 184, 166, 0.2);
+  color: #115e59; /* teal-800 */
+}
+
+.dark .lesson-prose h2 {
+  color: #5eead4; /* teal-300 */
+}
+
+.lesson-prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #134e4a; /* teal-900 */
+}
+
+.dark .lesson-prose h3 {
+  color: #99f6e4; /* teal-200 */
+}
+
+.lesson-prose p {
+  margin-bottom: 1.25rem;
+  font-size: 1.05rem;
+}
+
+.lesson-prose code {
+  font-family: var(--font-mono);
+  background-color: rgba(14, 116, 144, 0.1);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+  color: #0d9488;
+}
+
+.dark .lesson-prose code {
+  background-color: rgba(45, 212, 191, 0.15);
+  color: #2dd4bf;
+}
+
+.lesson-prose pre {
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-prose pre code {
+  display: block;
+  padding: 1.25rem;
+  background-color: #0f172a; /* slate-900 */
+  color: #f8fafc;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+.lesson-prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.lesson-prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.lesson-prose li {
+  margin-bottom: 0.5rem;
+}
+
+.lesson-prose blockquote {
+  border-left: 4px solid #14b8a6;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #475569; /* slate-600 */
+  margin: 1.5rem 0;
+}
+
+.dark .lesson-prose blockquote {
+  color: #94a3b8; /* slate-400 */
+}
+
+.lesson-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.lesson-prose th, .lesson-prose td {
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.lesson-prose th {
+  background-color: rgba(20, 184, 166, 0.1);
+  font-weight: 600;
+}
+
+.dark .lesson-prose th {
+  background-color: rgba(20, 184, 166, 0.15);
+}
+
+.lesson-prose hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid rgba(20, 184, 166, 0.3);
+}

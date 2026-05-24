@@ -1,0 +1,222 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { ArrowLeft, Save, Loader2, FilePlus2 } from 'lucide-react';
+
+export default function NewCoursePage() {
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
+  const [description, setDescription] = useState('');
+  const [level, setLevel] = useState('Beginner');
+  const [estimatedHours, setEstimatedHours] = useState<number>(8);
+  const [coverImage, setCoverImage] = useState('');
+  const [published, setPublished] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const router = useRouter();
+  const supabase = createClient();
+
+  const slugify = (text: string) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '') // Remove non-word characters
+      .replace(/[\s_-]+/g, '-') // Replace spaces/underscores with hyphens
+      .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setTitle(val);
+    setSlug(slugify(val));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg(null);
+
+    if (!title.trim() || !slug.trim()) {
+      setErrorMsg('Title and Slug are required fields.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('courses')
+        .insert({
+          title,
+          slug,
+          description: description.trim() || null,
+          level,
+          estimated_hours: estimatedHours,
+          cover_image: coverImage.trim() || null,
+          published,
+        });
+
+      if (error) throw error;
+
+      router.push('/admin');
+      router.refresh();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to create course. Ensure slug is unique.');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6 py-6">
+      
+      {/* Back button */}
+      <div>
+        <Link
+          href="/admin"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-teal-400 transition"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Admin Dashboard
+        </Link>
+      </div>
+
+      {/* Title */}
+      <div className="flex items-center gap-2 pb-3 border-b border-slate-900">
+        <FilePlus2 className="h-6 w-6 text-emerald-400" />
+        <h1 className="text-2xl font-extrabold text-slate-100">Create New Course</h1>
+      </div>
+
+      {/* Form Container */}
+      <div className="border border-slate-800 bg-slate-900/40 rounded-2xl p-6 sm:p-8">
+        
+        {errorMsg && (
+          <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+            <span className="font-bold">Error creating course</span>
+            <p className="mt-0.5">{errorMsg}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title input */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Course Title</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g., Biology Crash Course for Programmers"
+              value={title}
+              onChange={handleTitleChange}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
+            />
+          </div>
+
+          {/* Slug input */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Slug (Auto-generated)</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g., biology-crash-course-for-programmers"
+              value={slug}
+              onChange={(e) => setSlug(slugify(e.target.value))}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition font-mono"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Description</label>
+            <textarea
+              rows={4}
+              placeholder="Summarize course content and learning paths..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition leading-relaxed"
+            />
+          </div>
+
+          {/* Level & Hours */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Difficulty Level</label>
+              <select
+                value={level}
+                onChange={(e) => setLevel(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-slate-350 focus:outline-none focus:border-teal-500/60 transition"
+              >
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Estimated Duration (Hours)</label>
+              <input
+                type="number"
+                min={1}
+                required
+                value={estimatedHours}
+                onChange={(e) => setEstimatedHours(parseInt(e.target.value) || 0)}
+                className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
+              />
+            </div>
+          </div>
+
+          {/* Cover Image URL */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Cover Image URL (Optional)</label>
+            <input
+              type="url"
+              placeholder="https://images.unsplash.com/... or blank"
+              value={coverImage}
+              onChange={(e) => setCoverImage(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition font-mono"
+            />
+          </div>
+
+          {/* Published Toggle */}
+          <div className="flex items-center justify-between border border-slate-800/80 bg-slate-950/40 rounded-xl p-4">
+            <div>
+              <p className="text-sm font-bold text-slate-200">Publish Immediately</p>
+              <p className="text-xs text-slate-500 mt-0.5">Toggle to make this course visible in the catalog layout.</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={published}
+                onChange={(e) => setPublished(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-800 rounded-full peer peer-focus:ring-0 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-450 after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-slate-950"></div>
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-4 flex justify-end">
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm shadow-md shadow-emerald-500/10 transition duration-300 disabled:opacity-50"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4.5 w-4.5 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4.5 w-4.5" />
+                  Save Course
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
