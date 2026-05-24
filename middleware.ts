@@ -69,7 +69,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (url.pathname.startsWith('/login') && user) {
+  if ((url.pathname.startsWith('/login') || url.pathname.startsWith('/register')) && user) {
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
   }
@@ -102,5 +102,6 @@ export const config = {
     '/courses/:path*',
     '/admin/:path*',
     '/login',
+    '/register',
   ],
 };
