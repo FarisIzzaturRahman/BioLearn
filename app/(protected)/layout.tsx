@@ -24,7 +24,7 @@ export default async function ProtectedLayout({
     .single();
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navbar user={user} profile={profile || undefined} />
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
