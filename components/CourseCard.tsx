@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, Clock, BarChart } from 'lucide-react';
+import { BookOpen, Clock } from 'lucide-react';
 import ProgressBar from '@/components/ProgressBar';
 
 interface CourseCardProps {
@@ -20,37 +20,37 @@ export default function CourseCard({ course, progressPercentage = null, enrolled
   const getLevelColor = (level: string | null) => {
     switch (level) {
       case 'Beginner':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+        return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'Intermediate':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+        return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'Advanced':
-        return 'bg-violet-500/10 text-violet-400 border-violet-500/20';
+        return 'bg-red-100 text-red-700 border-red-200';
       default:
-        return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+        return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
   const hasProgress = progressPercentage !== null && progressPercentage !== undefined;
 
   return (
-    <div className="group relative rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-900/90 hover:border-teal-500/40 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-lg hover:shadow-teal-500/5">
+    <div className="group relative rounded-xl border border-gray-200 bg-white hover:border-blue-300 transition-all duration-300 flex flex-col h-full overflow-hidden shadow-sm hover:shadow-md">
       {/* Cover Image */}
-      <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
+      <div className="relative aspect-[16/9] overflow-hidden bg-gray-100 border-b border-gray-100">
         {course.cover_image ? (
           <img
             src={course.cover_image}
             alt={course.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-teal-900/20 via-slate-900 to-emerald-900/20 flex items-center justify-center p-4">
-            <BookOpen className="w-10 h-10 text-teal-500/40 group-hover:text-teal-400 transition-colors" />
+          <div className="w-full h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+            <BookOpen className="w-10 h-10 text-blue-500/30 group-hover:text-blue-500/50 transition-colors" />
           </div>
         )}
         
         {/* Level Badge */}
         {course.level && (
-          <span className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full border ${getLevelColor(course.level)}`}>
+          <span className={`absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full border shadow-sm ${getLevelColor(course.level)}`}>
             {course.level}
           </span>
         )}
@@ -59,10 +59,10 @@ export default function CourseCard({ course, progressPercentage = null, enrolled
       {/* Content */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="font-bold text-lg text-slate-100 group-hover:text-teal-400 transition-colors duration-200 line-clamp-1">
+          <h3 className="font-bold text-lg text-gray-900 group-hover:text-blue-600 transition-colors duration-200 line-clamp-1">
             {course.title}
           </h3>
-          <p className="mt-2 text-sm text-slate-400 line-clamp-2 leading-relaxed">
+          <p className="mt-2 text-sm text-gray-500 line-clamp-2 leading-relaxed">
             {course.description || 'Dive into Bioinformatics concepts and master biological computations.'}
           </p>
         </div>
@@ -71,21 +71,21 @@ export default function CourseCard({ course, progressPercentage = null, enrolled
         <div className="mt-6 space-y-4">
           {hasProgress && enrolled && (
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-medium text-slate-400">
+              <div className="flex justify-between text-xs font-semibold text-gray-500">
                 <span>Course Progress</span>
-                <span className="text-teal-400 font-bold">{progressPercentage}%</span>
+                <span className="text-blue-600 font-bold">{progressPercentage}%</span>
               </div>
               <ProgressBar percentage={progressPercentage} />
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs text-slate-400 font-medium">
+          <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs text-gray-500 font-medium">
             <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-slate-500" />
+              <Clock className="w-4 h-4 text-gray-400" />
               <span>{course.estimated_hours || 0} Hours</span>
             </div>
             {enrolled && !hasProgress && (
-              <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded text-[10px] font-bold">
+              <span className="text-emerald-700 bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold">
                 Enrolled
               </span>
             )}
@@ -93,7 +93,7 @@ export default function CourseCard({ course, progressPercentage = null, enrolled
 
           <Link
             href={`/courses/${course.slug}`}
-            className="block w-full text-center py-2.5 px-4 rounded-lg bg-slate-800 hover:bg-teal-500 hover:text-slate-950 font-semibold text-sm transition-all duration-300 text-slate-200"
+            className="block w-full text-center py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm hover:shadow transition-all duration-200"
           >
             {enrolled ? 'Continue Learning' : 'Explore Course'}
           </Link>

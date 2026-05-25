@@ -33,19 +33,19 @@ export default async function CoursesPage() {
     .select('module_id')
     .eq('user_id', user.id);
 
-  const enrolledCourseIds = enrollments?.map((e) => e.course_id) || [];
-  const completedModuleIds = completions?.map((c) => c.module_id) || [];
+  const enrolledCourseIds = enrollments?.map((e: any) => e.course_id) || [];
+  const completedModuleIds = completions?.map((c: any) => c.module_id) || [];
 
   return (
     <div className="space-y-8 py-6">
       
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-slate-100 flex items-center gap-2">
-          <BookOpen className="h-8 w-8 text-teal-400" />
+        <h1 className="text-3xl font-extrabold text-gray-900 flex items-center gap-2">
+          <BookOpen className="h-8 w-8 text-blue-600" />
           Bioinformatics Curriculum
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <p className="text-gray-500 font-semibold text-sm mt-1">
           Explore our structured pathways. Build foundational genomics skills and program bio-algorithms.
         </p>
       </div>
@@ -53,7 +53,7 @@ export default async function CoursesPage() {
       {/* Courses Grid */}
       {courses && courses.length > 0 ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course) => {
+          {courses.map((course: any) => {
             const isEnrolled = enrolledCourseIds.includes(course.id);
             const courseModules = course.modules || [];
             const completedCount = courseModules.filter((m: any) => completedModuleIds.includes(m.id)).length;
@@ -70,10 +70,10 @@ export default async function CoursesPage() {
           })}
         </div>
       ) : (
-        <div className="border border-dashed border-slate-800 bg-slate-900/10 rounded-2xl p-16 text-center max-w-xl mx-auto flex flex-col items-center gap-3">
-          <BookOpen className="h-10 w-10 text-slate-600" />
-          <h3 className="text-base font-bold text-slate-200">No courses published</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">
+        <div className="border border-dashed border-gray-300 bg-white rounded-2xl p-16 text-center max-w-xl mx-auto flex flex-col items-center gap-3 shadow-sm">
+          <BookOpen className="h-10 w-10 text-gray-400" />
+          <h3 className="text-base font-bold text-gray-900">No courses published</h3>
+          <p className="text-xs text-gray-500 mt-1 max-w-xs leading-relaxed font-semibold">
             The bioinformatics course catalog is currently being updated. Please check back shortly for fresh sandboxes!
           </p>
         </div>

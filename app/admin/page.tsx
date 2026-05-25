@@ -34,7 +34,7 @@ export default async function AdminDashboardPage() {
 
   const coursesList = courses || [];
   const totalCourses = coursesList.length;
-  const publishedCount = coursesList.filter(c => c.published).length;
+  const publishedCount = coursesList.filter((c: any) => c.published).length;
   const draftCount = totalCourses - publishedCount;
 
   return (
@@ -122,7 +122,7 @@ export default async function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-850">
-                  {coursesList.map((c) => (
+                  {coursesList.map((c: any) => (
                     <tr key={c.id} className="hover:bg-slate-900/30 transition">
                       <td className="px-6 py-4 font-semibold text-slate-200">
                         {c.title}
