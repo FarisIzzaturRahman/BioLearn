@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Dna, ShieldAlert, KeyRound, Mail, Loader2 } from 'lucide-react';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,119 +28,109 @@ export default function LoginPage() {
         password,
       });
 
-      if (error) throw error;
-
-      router.push('/dashboard');
-      router.refresh();
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
+      } else {
+        router.push('/dashboard');
+        router.refresh();
+      }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Login failed. Please check your credentials.');
+      setErrorMsg('An unexpected error occurred. Please try again.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-teal-500/5 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="w-full max-w-md z-10">
-        {/* Logo and Brand */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-teal-500/10 rounded-2xl text-teal-400 mb-3 shadow-lg shadow-teal-500/5">
-            <Dna className="h-10 w-10 animate-float" />
-          </div>
-          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-            BioLearn
-          </h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Learn Bioinformatics the CS Way. Sign up in seconds.
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 py-12">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 w-full max-w-md space-y-6">
+        
+        {/* Logo and Greeting Header */}
+        <div className="text-center space-y-2">
+          <Link href="/" className="inline-flex items-center gap-2 group justify-center">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
+              <Dna className="w-6 h-6" />
+            </div>
+            <span className="text-2xl font-black text-gray-900 tracking-tight">
+              Bio<span className="text-blue-600">Learn</span>
+            </span>
+          </Link>
+          <h2 className="text-xl font-bold text-gray-900 mt-2">Sign in to your workspace</h2>
+          <p className="text-gray-500 font-semibold text-xs leading-relaxed">
+            Translate biology systems into software algorithms.
           </p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
-          <h3 className="text-xl font-bold text-slate-100 text-center mb-6">
-            Welcome to the Sandbox
-          </h3>
-
-          {/* Error notifications */}
-          {errorMsg && (
-            <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex gap-2.5 items-start">
-              <ShieldAlert className="h-5 w-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold">Authentication Error</span>
-                <p className="mt-0.5">{errorMsg}</p>
-              </div>
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-500" />
-                <input
-                  type="email"
-                  required
-                  placeholder="name@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-11 pr-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
-                />
-              </div>
-            </div>
-
-            {/* Password input */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Password</label>
-              </div>
-              <div className="relative">
-                <KeyRound className="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-500" />
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-11 pr-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-extrabold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2 shadow-md shadow-teal-500/10"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4.5 w-4.5 animate-spin" />
-                  Logging in...
-                </>
-              ) : (
-                'Log In'
-              )}
-            </button>
-          </form>
-
-          {/* Toggle Form Link */}
-          <div className="mt-6 pt-4 border-t border-slate-800/80 text-center text-xs">
-            <span className="text-slate-500">Don&apos;t have an account? </span>
-            <Link href="/register" className="text-teal-400 hover:text-teal-300 font-semibold transition">
-              Register Here
-            </Link>
+        {/* Error Notification Alert */}
+        {errorMsg && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-start gap-2 text-xs font-semibold animate-float-subtle">
+            <ShieldAlert className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+            <span>{errorMsg}</span>
           </div>
+        )}
+
+        {/* Sign In Form */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+              Email Address
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                required
+                type="email"
+                placeholder="you@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+              Password
+            </label>
+            <div className="relative">
+              <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                required
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm hover:shadow transition duration-150 flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Signing in...
+              </>
+            ) : (
+              'Sign In'
+            )}
+          </button>
+        </form>
+
+        {/* Footer Actions */}
+        <div className="text-center pt-2 border-t border-gray-100">
+          <p className="text-xs text-gray-500 font-semibold">
+            Don&apos;t have an account?{' '}
+            <Link href="/register" className="text-blue-600 hover:text-blue-700 font-bold">
+              Register now
+            </Link>
+          </p>
         </div>
 
-        {/* Home Link */}
-        <div className="text-center mt-6">
-          <Link href="/" className="text-xs text-slate-400 hover:text-teal-400 font-semibold transition">
-            &larr; Back to Landing Page
-          </Link>
-        </div>
       </div>
     </div>
   );

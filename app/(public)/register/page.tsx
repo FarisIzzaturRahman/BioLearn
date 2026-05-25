@@ -3,10 +3,10 @@
 export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { Dna, ShieldAlert, KeyRound, Mail, User, CheckCircle2, Loader2 } from 'lucide-react';
+import { Dna, ShieldAlert, KeyRound, Mail, User, CheckCircle2, Loader2, ArrowLeft } from 'lucide-react';
+
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +16,6 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const router = useRouter();
   const supabase = createClient();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -48,165 +47,168 @@ export default function RegisterPage() {
         },
       });
 
-      if (error) throw error;
-
-      setSuccess(true);
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
+      } else {
+        setSuccess(true);
+        setLoading(false);
+      }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Registration failed. Please try again.');
+      setErrorMsg('An unexpected error occurred during registration. Please try again.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-teal-500/5 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="w-full max-w-md z-10">
-        {/* Logo and Brand */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-teal-500/10 rounded-2xl text-teal-400 mb-3 shadow-lg shadow-teal-500/5">
-            <Dna className="h-10 w-10 animate-float" />
-          </div>
-          <h2 className="text-3xl font-extrabold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
-            BioLearn
-          </h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Learn Bioinformatics the CS Way. Sign up in seconds.
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 py-12">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 w-full max-w-md space-y-6">
+        
+        {/* Logo and Greeting Header */}
+        <div className="text-center space-y-2">
+          <Link href="/" className="inline-flex items-center gap-2 group justify-center">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
+              <Dna className="w-6 h-6" />
+            </div>
+            <span className="text-2xl font-black text-gray-900 tracking-tight">
+              Bio<span className="text-blue-600">Learn</span>
+            </span>
+          </Link>
+          <h2 className="text-xl font-bold text-gray-900 mt-2">Create your account</h2>
+          <p className="text-gray-500 font-semibold text-xs leading-relaxed">
+            Begin your journey in computational biology.
           </p>
         </div>
 
-        {/* Register Card */}
-        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 shadow-2xl backdrop-blur-xl">
-          {success ? (
-            <div className="text-center py-8 space-y-4">
-              <div className="inline-flex p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl shadow-lg shadow-emerald-500/5">
-                <CheckCircle2 className="h-12 w-12 animate-pulse" />
+        {/* Success State Banner */}
+        {success ? (
+          <div className="space-y-6 animate-float-subtle">
+            <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-xl flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-bold text-sm">Registration Successful!</p>
+                <p className="text-xs leading-relaxed font-semibold text-green-700">
+                  Akun berhasil dibuat! Silakan cek email kamu untuk verifikasi.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-100">Account Created Successfully!</h3>
-              <p className="text-slate-400 text-xs leading-relaxed max-w-xs mx-auto">
-                Your sandbox access profile has been registered. Redirecting you to the login screen in 2 seconds...
+            </div>
+
+            <Link
+              href="/login"
+              className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm transition duration-150 flex items-center justify-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Login
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* Error Notification Alert */}
+            {errorMsg && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-start gap-2 text-xs font-semibold animate-float-subtle">
+                <ShieldAlert className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {/* Registration Form */}
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    required
+                    type="text"
+                    placeholder="John Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    required
+                    type="email"
+                    placeholder="you@domain.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+                  Password (min. 8 characters)
+                </label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    required
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    required
+                    type="password"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full bg-white border border-gray-300 rounded-lg pl-9 pr-4 py-2.5 text-sm font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm hover:shadow transition duration-150 flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  'Create Account'
+                )}
+              </button>
+            </form>
+
+            {/* Footer Actions */}
+            <div className="text-center pt-2 border-t border-gray-100">
+              <p className="text-xs text-gray-500 font-semibold">
+                Already have an account?{' '}
+                <Link href="/login" className="text-blue-600 hover:text-blue-700 font-bold">
+                  Sign in
+                </Link>
               </p>
             </div>
-          ) : (
-            <>
-              <h3 className="text-xl font-bold text-slate-100 text-center mb-6">
-                Create Your Account
-              </h3>
+          </>
+        )}
 
-              {/* Error notifications */}
-              {errorMsg && (
-                <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex gap-2.5 items-start">
-                  <ShieldAlert className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold">Registration Error</span>
-                    <p className="mt-0.5">{errorMsg}</p>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleRegister} className="space-y-4">
-                {/* Full Name input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-500" />
-                    <input
-                      type="text"
-                      required
-                      placeholder="Alan Turing"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-11 pr-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
-                    />
-                  </div>
-                </div>
-
-                {/* Email input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-500" />
-                    <input
-                      type="email"
-                      required
-                      placeholder="name@company.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-11 pr-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
-                    />
-                  </div>
-                </div>
-
-                {/* Password input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Password</label>
-                  <div className="relative">
-                    <KeyRound className="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-500" />
-                    <input
-                      type="password"
-                      required
-                      placeholder="Min. 8 characters"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-11 pr-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
-                    />
-                  </div>
-                </div>
-
-                {/* Confirm Password input */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Confirm Password</label>
-                  <div className="relative">
-                    <KeyRound className="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-500" />
-                    <input
-                      type="password"
-                      required
-                      placeholder="Retype password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-11 pr-4 text-sm text-slate-200 focus:outline-none focus:border-teal-500/60 transition"
-                    />
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-extrabold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-4 shadow-md shadow-teal-500/10"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4.5 w-4.5 animate-spin" />
-                      Creating Account...
-                    </>
-                  ) : (
-                    'Register'
-                  )}
-                </button>
-              </form>
-
-              {/* Toggle Form Link */}
-              <div className="mt-6 pt-4 border-t border-slate-800/80 text-center text-xs">
-                <span className="text-slate-500">Already have an account? </span>
-                <Link href="/login" className="text-teal-400 hover:text-teal-300 font-semibold transition">
-                  Login Here
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Home Link */}
-        <div className="text-center mt-6">
-          <Link href="/" className="text-xs text-slate-400 hover:text-teal-400 font-semibold transition">
-            &larr; Back to Landing Page
-          </Link>
-        </div>
       </div>
     </div>
   );
